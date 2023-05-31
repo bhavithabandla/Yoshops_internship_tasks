@@ -2,46 +2,75 @@
 <html>
 <head>
   <title>Shopping Website Reviews</title>
+  <style>
+    .review-container {
+      margin-top: 20px;
+    }
+    .review {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .rating {
+      font-weight: bold;
+      color: #ff9800;
+    }
+  </style>
 </head>
 <body>
-  <h1>Add Review</h1>
+  <h1>Shopping Website Reviews</h1>
+
   <form id="reviewForm">
     <label for="websiteLink">Website Link:</label>
-    <input type="text" id="websiteLink" name="websiteLink" required><br><br>
-    
+    <input type="text" id="websiteLink" required>
+    <br>
     <label for="rating">Rating:</label>
-    <input type="number" id="rating" name="rating" min="1" max="5" required><br><br>
-    
-    <label for="review">Review:</label><br>
-    <textarea id="review" name="review" rows="4" cols="50" required></textarea><br><br>
-    
-    <input type="submit" value="Submit Review">
+    <input type="number" id="rating" min="1" max="5" required>
+    <br>
+    <label for="review">Review:</label>
+    <textarea id="review" rows="4" required></textarea>
+    <br>
+    <button type="submit">Submit</button>
   </form>
-  
-  <h1>Reviews</h1>
-  <div id="reviewsList"></div>
-  
+
+  <div id="reviewsContainer">
+    <h2>Reviews:</h2>
+  </div>
+
   <script>
     document.getElementById("reviewForm").addEventListener("submit", function(event) {
       event.preventDefault(); // Prevent form submission
-      
-      // Get input values
+
       var websiteLink = document.getElementById("websiteLink").value;
       var rating = document.getElementById("rating").value;
       var review = document.getElementById("review").value;
-      
-      // Create new review element
-      var newReview = document.createElement("div");
-      newReview.innerHTML = "<p><strong>Website Link:</strong> " + websiteLink + "</p>" +
-                            "<p><strong>Rating:</strong> " + rating + "</p>" +
-                            "<p><strong>Review:</strong> " + review + "</p><hr>";
-      
-      // Append new review to reviews list
-      var reviewsList = document.getElementById("reviewsList");
-      reviewsList.appendChild(newReview);
-      
-      // Reset form values
-      document.getElementById("reviewForm").reset();
+
+      var reviewContainer = document.createElement("div");
+      reviewContainer.className = "review";
+
+      var websiteLinkElement = document.createElement("a");
+      websiteLinkElement.href = websiteLink;
+      websiteLinkElement.textContent = websiteLink;
+
+      var ratingElement = document.createElement("span");
+      ratingElement.className = "rating";
+      ratingElement.textContent = "Rating: " + rating;
+
+      var reviewElement = document.createElement("p");
+      reviewElement.textContent = review;
+
+      reviewContainer.appendChild(websiteLinkElement);
+      reviewContainer.appendChild(document.createElement("br"));
+      reviewContainer.appendChild(ratingElement);
+      reviewContainer.appendChild(reviewElement);
+
+      var reviewsContainer = document.getElementById("reviewsContainer");
+      reviewsContainer.appendChild(reviewContainer);
+
+      // Clear the form inputs
+      document.getElementById("websiteLink").value = "";
+      document.getElementById("rating").value = "";
+      document.getElementById("review").value = "";
     });
   </script>
 </body>
