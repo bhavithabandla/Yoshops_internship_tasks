@@ -1,74 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Shopping Website Reviews</title>
-  <style>
-    .review-container {
-      margin-top: 20px;
-    }
-    .review {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-    .rating {
-      font-weight: bold;
-      color: #ff9800;
-    }
-  </style>
+  <title>Product Review</title>
 </head>
 <body>
-  <h1>Shopping Website Reviews</h1>
-
+  <h1>Product Review</h1>
+  
   <form id="reviewForm">
-    <label for="websiteLink">Website Link:</label>
-    <input type="text" id="websiteLink" required>
-    <br>
+    <label for="productLink">Product Link:</label>
+    <input type="text" id="productLink" name="productLink" required><br><br>
+
     <label for="rating">Rating:</label>
-    <input type="number" id="rating" min="1" max="5" required>
-    <br>
+    <input type="number" id="rating" name="rating" min="1" max="5" required><br><br>
+
     <label for="review">Review:</label>
-    <textarea id="review" rows="4" required></textarea>
-    <br>
-    <button type="submit">Submit</button>
+    <textarea id="review" name="review" required></textarea><br><br>
+
+    <input type="submit" value="Submit Review">
   </form>
 
-  <div id="reviewsContainer">
-    <h2>Reviews:</h2>
-  </div>
+  <div id="reviewContainer"></div>
 
   <script>
     document.getElementById("reviewForm").addEventListener("submit", function(event) {
-      event.preventDefault(); // Prevent form submission
+      event.preventDefault();
 
-      var websiteLink = document.getElementById("websiteLink").value;
+      var productLink = document.getElementById("productLink").value;
       var rating = document.getElementById("rating").value;
       var review = document.getElementById("review").value;
 
-      var reviewContainer = document.createElement("div");
-      reviewContainer.className = "review";
+      var reviewContainer = document.getElementById("reviewContainer");
+      var newReview = document.createElement("div");
+      newReview.innerHTML = "<h3>Rating: " + rating + "</h3><p>Review: " + review + "</p><p>Product Link: <a href='" + productLink + "'>" + productLink + "</a></p>";
+      reviewContainer.appendChild(newReview);
 
-      var websiteLinkElement = document.createElement("a");
-      websiteLinkElement.href = websiteLink;
-      websiteLinkElement.textContent = websiteLink;
-
-      var ratingElement = document.createElement("span");
-      ratingElement.className = "rating";
-      ratingElement.textContent = "Rating: " + rating;
-
-      var reviewElement = document.createElement("p");
-      reviewElement.textContent = review;
-
-      reviewContainer.appendChild(websiteLinkElement);
-      reviewContainer.appendChild(document.createElement("br"));
-      reviewContainer.appendChild(ratingElement);
-      reviewContainer.appendChild(reviewElement);
-
-      var reviewsContainer = document.getElementById("reviewsContainer");
-      reviewsContainer.appendChild(reviewContainer);
-
-      // Clear the form inputs
-      document.getElementById("websiteLink").value = "";
+      // Clear form fields
+      document.getElementById("productLink").value = "";
       document.getElementById("rating").value = "";
       document.getElementById("review").value = "";
     });
