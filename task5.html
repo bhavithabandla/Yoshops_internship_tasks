@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ambur Biryani Billing System</title>
+</head>
+<body>
+  <h1>Ambur Biryani Billing System</h1>
+  
+  <form id="billingForm" onsubmit="generateBill(event)">
+    <label for="name">Name:</label>
+    <select name="name" id="name">
+        <option name="chicken biryani-1/2kg">chicken biryani-1/2kg</option>
+        <option name="chicken biryani-1kg">chicken biryani-1kg</option>
+        <option name="chicken biryani-1/4kg">chicken biryani-1/4kg</option>
+        <option name="kushka-1kg">kushka-1kg</option>
+        <option name="kushka-1/2kg">kushka-1/2kg</option>
+        <option name="kushka-1/4kg">kushka-1/4kg</option>
+        <option name="egg biryani-1/2kg">egg biryani-1/2kg</option>
+        <option name="egg biryani-1kg">egg biryani-1kg</option>
+        <option name="mutton biryani-0.5kg">mutton biryani-0.5kg</option>
+        <option name="mutton biryani-1kg">mutton biryani-1kg</option>
+      </select><br><br>
+    <label for="phone">Phone no:</label>
+    <input type="text" id="phone" required><br><br>
+    
+    <label for="foodItem">Food item quantity no:</label>
+    <input type="number" id="foodItem" required><br><br>
+    
+    <input type="submit" value="Generate Bill">
+  </form>
+  
+  <script>
+    function generateBill(event) {
+      event.preventDefault();
+      
+      // Get input values
+      var name = document.getElementById("name").value;
+      var phone = document.getElementById("phone").value;
+      var foodItem = document.getElementById("foodItem").value;
+      
+      // Get the cost of the food item based on the name
+      var itemCost = getItemCost(name);
+      
+      if (itemCost !== null) {
+        // Calculate the total cost
+        var totalCost = itemCost * foodItem;
+        
+        // Generate bill
+        var bill = "Ambur Biryani Billing System\n";
+        bill += "-----------------------------------\n";
+        bill += "Name: " + name + "\n";
+        bill += "Phone no: " + phone + "\n";
+        bill += "Food item: " + name + "\n";
+        bill += "Quantity: " + foodItem + "\n";
+        bill += "Cost per item: $" + itemCost + "\n";
+        bill += "Total cost: $" + totalCost + "\n";
+        bill += "-----------------------------------\n";
+        
+        // Display bill
+        alert(bill);
+        
+        // Save bill using the File System Access API
+        saveBillToFileSystem(bill);
+      } else {
+        alert("Invalid food item name. Please try again.");
+      }
+    }
+    
+    function getItemCost(name) {
+      // Define the cost of each food item
+      var itemCosts = {
+        "chicken biryani-1/2kg": 120,
+        "chicken biryani-1kg": 170,
+        "chicken biryani-1/4kg": 80,
+        "kushka-1kg": 110,
+        "kushka-1/2kg": 70,
+        "kushka-1/4kg": 50,
+        "egg biryani-1kg": 120,
+        "egg biryani-1/2kg": 80,
+        "mutton biryani-1/2kg":190,
+        "mutton biryani":260,
+        "chicken pakodi":60,
+        // Add more food items and their respective costs here
+      };
+      
+      // Retrieve the cost based on the name
+      return itemCosts[name.toLowerCase()] || null;
+    }
+    
+    async function saveBillToFileSystem(bill) {
+      try {
+        // Request permission to access the file system
+        const handle = await window.showSaveFilePicker();
+        const writable = await handle.createWritable();
+        
+        // Write the bill data to the file
+        await writable.write(bill);
+        
+        // Close the file
+        await writable.close();
+        
+        alert("Bill saved successfully!");
+      } catch (error) {
+        console.error(error);
+        alert("An error occurred while saving the bill.");
+      }
+    }
+  </script>
+</body>
+</html>
