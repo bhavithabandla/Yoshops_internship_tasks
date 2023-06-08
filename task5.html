@@ -1,110 +1,223 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ambur Biryani Billing System</title>
+    <title>Billing System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d5f1f1;
+            margin: 0;
+            padding: 20px;
+           
+        }
+
+        h1 {
+            text-align: left;
+        }
+
+        form {
+            max-width: 7000px;
+            margin: 0 auto;
+        }
+
+        label {
+            display:inline;
+            margin-bottom: 5px;
+            text-align:left;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        input[type="number"] {
+            width: 50px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        function calculateTotal() {
+            var items = {
+                "Chicken Biryani 1kg": 0,
+                "Chicken Biryani 1/2kg": 0,
+                "Chicken Biryani 1/4kg": 0,
+                "Kushka 1kg": 0,
+                "Kushka 1/2kg": 0,
+                "Kushka 1/4kg": 0,
+                "Egg Biryani 1kg": 0,
+                "Egg Biryani 1/2kg": 0,
+                "Mutton Biryani 1kg": 0,
+                "Mutton Biryani 1/2kg": 0,
+                "Mutton Biryani 100g": 0
+            };
+
+            // Retrieve the quantities of each item
+            for (var item in items) {
+                items[item] = parseInt(document.getElementById(item.replace(/ /g, '')).value) || 0;
+            }
+
+            var total = 0;
+            var orderedItems = "";
+
+            // Calculate the total and create the ordered items string
+            for (var item in items) {
+                var quantity = items[item];
+                if (quantity > 0) {
+                    var amount = calculateAmount(item, quantity);
+                    orderedItems += item + ": " + quantity + " - Amount: Rs" + amount.toFixed(2) + "<br>";
+                    total += amount;
+                }
+            }
+
+            // Display the ordered items and total
+            document.getElementById("orderedItems").innerHTML = orderedItems;
+            document.getElementById("totalAmount").innerHTML = "Total Amount: Rs" + total.toFixed(2);
+        }
+
+        function calculateAmount(item, quantity) {
+            // Add your own logic to calculate the amount based on the item and quantity
+            // This is just a placeholder
+            var prices = {
+                "Chicken Biryani 1kg": 200,
+                "Chicken Biryani 1/2kg": 100,
+                "Chicken Biryani 1/4kg": 50,
+                "Kushka 1kg": 150,
+                "Kushka 1/2kg": 90,
+                "Kushka 1/4kg": 70,
+                "Egg Biryani 1kg": 100,
+                "Egg Biryani 1/2kg": 60,
+                "Mutton Biryani 1kg": 300,
+                "Mutton Biryani 1/2kg": 150,
+                "Mutton Biryani 100g": 100
+            };
+
+            return prices[item] * quantity;
+        }
+
+        function generateBill() {
+            var customerName = document.getElementById("customerName").value;
+            var phoneNumber = document.getElementById("phoneNumber").value;
+            var billNumber = document.getElementById("billNumber").value;
+            var orderedItems = document.getElementById("orderedItems").innerHTML;
+            var totalAmount = document.getElementById("totalAmount").innerHTML;
+
+            var billDetails = "<strong>Customer Name:</strong> " + customerName + "<br>" +
+                              "<strong>Phone Number:</strong> " + phoneNumber + "<br>" +
+                              "<strong>Bill Number:</strong> " + billNumber + "<br><br>" +
+                              "<strong>Ordered Items:</strong><br>" +
+                              orderedItems + "<br>" +
+                              "<strong>" + totalAmount + "</strong>";
+
+            // Display the generated bill
+            document.getElementById("billDetails").innerHTML = billDetails;
+        }
+        function saveBill() {
+    var billDetails = document.getElementById("billDetails").innerHTML;
+    var billBlob = new Blob([billDetails], { type: "text/html" });
+    var fileName = "bill.html";
+    
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        // For IE browser
+        window.navigator.msSaveOrOpenBlob(billBlob, fileName);
+    } else {
+        // For other browsers
+        var downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(billBlob);
+        downloadLink.download = fileName;
+        downloadLink.click();
+    }
+}
+    </script>
 </head>
 <body>
-  <h1>Ambur Biryani Billing System</h1>
-  
-  <form id="billingForm" onsubmit="generateBill(event)">
-    <label for="name">Name:</label>
-    <select name="name" id="name">
-        <option name="chicken biryani-1/2kg">chicken biryani-1/2kg</option>
-        <option name="chicken biryani-1kg">chicken biryani-1kg</option>
-        <option name="chicken biryani-1/4kg">chicken biryani-1/4kg</option>
-        <option name="kushka-1kg">kushka-1kg</option>
-        <option name="kushka-1/2kg">kushka-1/2kg</option>
-        <option name="kushka-1/4kg">kushka-1/4kg</option>
-        <option name="egg biryani-1/2kg">egg biryani-1/2kg</option>
-        <option name="egg biryani-1kg">egg biryani-1kg</option>
-        <option name="mutton biryani-0.5kg">mutton biryani-0.5kg</option>
-        <option name="mutton biryani-1kg">mutton biryani-1kg</option>
-      </select><br><br>
-    <label for="phone">Phone no:</label>
-    <input type="text" id="phone" required><br><br>
-    
-    <label for="foodItem">Food item quantity no:</label>
-    <input type="number" id="foodItem" required><br><br>
-    
-    <input type="submit" value="Generate Bill">
-  </form>
-  
-  <script>
-    function generateBill(event) {
-      event.preventDefault();
-      
-      // Get input values
-      var name = document.getElementById("name").value;
-      var phone = document.getElementById("phone").value;
-      var foodItem = document.getElementById("foodItem").value;
-      
-      // Get the cost of the food item based on the name
-      var itemCost = getItemCost(name);
-      
-      if (itemCost !== null) {
-        // Calculate the total cost
-        var totalCost = itemCost * foodItem;
-        
-        // Generate bill
-        var bill = "Ambur Biryani Billing System\n";
-        bill += "-----------------------------------\n";
-        bill += "Name: " + name + "\n";
-        bill += "Phone no: " + phone + "\n";
-        bill += "Food item: " + name + "\n";
-        bill += "Quantity: " + foodItem + "\n";
-        bill += "Cost per item: $" + itemCost + "\n";
-        bill += "Total cost: $" + totalCost + "\n";
-        bill += "-----------------------------------\n";
-        
-        // Display bill
-        alert(bill);
-        
-        // Save bill using the File System Access API
-        saveBillToFileSystem(bill);
-      } else {
-        alert("Invalid food item name. Please try again.");
-      }
-    }
-    
-    function getItemCost(name) {
-      // Define the cost of each food item
-      var itemCosts = {
-        "chicken biryani-1/2kg": 120,
-        "chicken biryani-1kg": 170,
-        "chicken biryani-1/4kg": 80,
-        "kushka-1kg": 110,
-        "kushka-1/2kg": 70,
-        "kushka-1/4kg": 50,
-        "egg biryani-1kg": 120,
-        "egg biryani-1/2kg": 80,
-        "mutton biryani-1/2kg":190,
-        "mutton biryani":260,
-        "chicken pakodi":60,
-        // Add more food items and their respective costs here
-      };
-      
-      // Retrieve the cost based on the name
-      return itemCosts[name.toLowerCase()] || null;
-    }
-    
-    async function saveBillToFileSystem(bill) {
-      try {
-        // Request permission to access the file system
-        const handle = await window.showSaveFilePicker();
-        const writable = await handle.createWritable();
-        
-        // Write the bill data to the file
-        await writable.write(bill);
-        
-        // Close the file
-        await writable.close();
-        
-        alert("Bill saved successfully!");
-      } catch (error) {
-        console.error(error);
-        alert("An error occurred while saving the bill.");
-      }
-    }
-  </script>
+    <h1>Billing System</h1>
+
+    <form>
+        <label for="customerName">Customer Name:</label>
+        <input type="text" id="customerName" required>
+
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="tel" id="phoneNumber" required>
+
+        <label for="billNumber">Bill Number:</label>
+        <input type="text" id="billNumber" required><br><br>
+
+        <label for="chickenBiryani1kg">Chicken Biryani 1kg:</label>
+        <input type="number" id="ChickenBiryani1kg" min="0" value="0">
+
+        <label for="chickenBiryani1/2kg">Chicken Biryani 1/2kg:</label>
+        <input type="number" id="ChickenBiryani1/2kg" min="0" value="0">
+        <br> <br>
+        <label for="chickenBiryani1/4kg">Chicken Biryani 1/4kg:</label>
+        <input type="number" id="ChickenBiryani1/4kg" min="0" value="0">
+
+        <label for="kushka1kg">Kushka 1kg:</label>
+        <input type="number" id="Kushka1kg" min="0" value="0">
+        <br> <br>
+        <label for="kushka1/2kg">Kushka 1/2kg:</label>
+        <input type="number" id="Kushka1/2kg" min="0" value="0">
+
+        <label for="kushka1/4kg">Kushka 1/4kg:</label>
+        <input type="number" id="Kushka1/4kg" min="0" value="0">
+        <br> <br>
+        <label for="eggBiryani1kg">Egg Biryani 1kg:</label>
+        <input type="number" id="EggBiryani1kg" min="0" value="0">
+
+        <label for="eggBiryani1/2kg">Egg Biryani 1/2kg:</label>
+        <input type="number" id="EggBiryani1/2kg" min="0" value="0">
+        <br> <br>
+        <label for="muttonBiryani1kg">Mutton Biryani 1kg:</label>
+        <input type="number" id="MuttonBiryani1kg" min="0" value="0">
+
+        <label for="muttonBiryani1/2kg">Mutton Biryani 1/2kg:</label>
+        <input type="number" id="MuttonBiryani1/2kg" min="0" value="0">
+        <br> <br>
+        <label for="muttonBiryani100g">Mutton Biryani 100g:</label>
+        <input type="number" id="MuttonBiryani100g" min="0" value="0">
+
+        <br><br>
+
+        <button type="button" onclick="calculateTotal()">Calculate Total</button>
+        <button type="button" onclick="generateBill()">Generate Bill</button>
+        <button type="button" onclick="saveBill()">Save Bill</button>
+
+
+        <br><br>
+
+        <div class="result">
+            <h3>Ordered Items:</h3>
+            <div id="orderedItems"></div>
+            <div id="totalAmount"></div>
+        </div>
+
+        <br><br>
+
+        <div id="billDetails"></div>
+    </form>
 </body>
 </html>
